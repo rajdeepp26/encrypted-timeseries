@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Encrypted Message</title>
+</head>
+<body>
+    <div style="margin: auto;width: 50%; text-align: center;">
+        <h2> Send Encrypted Message </h2> 
+        <h4>Form</h4>
+        <form method="POST" enctype="multipart/form-data" action="/api/v1/listener">
+            Enter the encrypted message: </br>
+            <textarea rows="4" cols="50" name="encrypted-message" ></textarea> </br>
+            <button>Send</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,37 @@
+{
+  "name": "socket",
+  "version": "1.0.0",
+  "description": "Data transfer over socket",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "env-cmd -f ./config/dev.env nodemon server.js",
+    "start:test": "env-cmd -f ./config/test.env/ jest",
+    "start:prod": "env-cmd -f ./config/prod.env nodemon server.js"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  },
+  "keywords": [
+    "backend",
+    "socket"
+  ],
+  "author": "Rajdeep Purkayastha",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "env-cmd": "^10.1.0",
+    "express": "^4.17.1",
+    "http-errors": "^1.8.1",
+    "mongoose": "^6.1.2",
+    "morgan": "^1.10.0",
+    "multiparty": "^4.2.2"
+  },
+  "devDependencies": {
+    "jest": "^27.4.5",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.1.6"
+  }
+}

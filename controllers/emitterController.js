@@ -49,9 +49,25 @@ const addHashToObject = new Transform({
     hash.update(chunk);
     let hashedValue = hash.digest("hex");
     obj.secret_key = hashedValue;
-    console.log(obj);
 
     this.push(JSON.stringify(obj));
+    callback();
+  },
+});
+
+const encryptObject = new Transform({
+  transform(chunk, encoding, callback) {
+
+    // console.log(JSON.parse(chunk))
+    // console.log("chunk",chunk)
+    const iv = crypto.randomBytes(16).toString("hex").slice(0, 16);
+    // console.log("iv",iv);
+    const message = chunk;
+    const key = process.env.SECRET_KEY;
+
+    const encrypter = crypto.createCipheriv("aes-256-ctr", key, iv);
+    let encryptedObject = encrypter.update(message, "utf8", "hex");
+    this.push(encryptedObject+"|");
     callback();
   },
 });
@@ -63,14 +79,14 @@ exports.sendEncryptedMessage = async (req, res, next) => {
 
     let total = 0;
     report.on("data", (chunk) => {
-      console.log(chunk.toString());
       total += chunk.length;
       console.log("bytes", total);
     });
     createReadStream(filename)
       .pipe(pushTransformedObject)
-      .pipe(addHashToObject)
       .pipe(throttle)
+      .pipe(addHashToObject)
+      .pipe(encryptObject)
       .pipe(report)
       .pipe(res)
       .on("error", console.error);

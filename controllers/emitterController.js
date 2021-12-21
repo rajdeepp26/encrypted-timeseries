@@ -3,7 +3,7 @@ const createError = require("http-errors");
 
 const { createReadStream, createWriteStream } = require("fs");
 const { PassThrough, Duplex, Transform } = require("stream");
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 const filename = "./data.json";
 
@@ -23,7 +23,6 @@ class Throttle extends Duplex {
 }
 
 const pushTransformedObject = new Transform({
-
   transform(chunk, encoding, callback) {
     let obj = JSON.parse(chunk);
     let namesLength = obj.names.length;
@@ -42,6 +41,21 @@ const pushTransformedObject = new Transform({
   },
 });
 
+const addHashToObject = new Transform({
+  transform(chunk, encoding, callback) {
+    let obj = JSON.parse(chunk);
+
+    const hash = crypto.createHash("sha256");
+    hash.update(chunk);
+    let hashedValue = hash.digest("hex");
+    obj.secret_key = hashedValue;
+    console.log(obj);
+
+    this.push(JSON.stringify(obj));
+    callback();
+  },
+});
+
 exports.sendEncryptedMessage = async (req, res, next) => {
   try {
     const report = new PassThrough();
@@ -49,12 +63,13 @@ exports.sendEncryptedMessage = async (req, res, next) => {
 
     let total = 0;
     report.on("data", (chunk) => {
-      console.log(chunk.toString())
+      console.log(chunk.toString());
       total += chunk.length;
       console.log("bytes", total);
     });
     createReadStream(filename)
       .pipe(pushTransformedObject)
+      .pipe(addHashToObject)
       .pipe(throttle)
       .pipe(report)
       .pipe(res)

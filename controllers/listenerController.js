@@ -5,7 +5,7 @@ const { createReadStream, createWriteStream } = require("fs");
 const { PassThrough, Duplex } = require("stream");
 
 const fs = require("fs");
-const filename = "./public/views/form.html";
+const form = "./public/views/form.html";
 const multiparty = require("multiparty");
 
 exports.readEncryptedMessage = async (req, res, next) => {
@@ -38,8 +38,8 @@ exports.sendFormToGetEncryptedMessage = async (req, res, next) => {
     res.writeHead(200, {
       "Content-Type": "text/html",
     });
-    let fileContent = fs.createReadStream(filename);
-    fileContent.pipe(res);
+    let formContent = fs.createReadStream(form);
+    formContent.pipe(res);
   } catch (error) {
     next(error);
   }

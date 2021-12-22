@@ -1,10 +1,9 @@
 const createError = require("http-errors");
-
 const { createReadStream } = require("fs");
-const { PassThrough, Duplex } = require("stream");
+const { PassThrough } = require("stream");
+
 const emitterService = require("../services/emitterService") 
 const filename = "./data.json";
-
 const Throttle = require('../helper/throttle');
 
 exports.sendEncryptedMessage = async (req, res, next) => {

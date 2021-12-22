@@ -2,7 +2,24 @@ const { Transform } = require("stream");
 const crypto = require("crypto");
 const NUMBER_OF_OBJECTS = 10;
 
-exports.decryptObject = async (encryptedData) => {
+exports.getcompleteDecryptedData = async (
+  encryptedDataArray,
+  completeDecryptedData
+) => {
+  for (let i = 0; i < encryptedDataArray.length; i++) {
+    let decryptedData = "";
+    if (encryptedDataArray[i].length > 0) {
+      decryptedData += await decryptObject(encryptedDataArray[i]);
+      let validDecryptedData = await validateObject(decryptedData);
+      if (validDecryptedData) {
+        completeDecryptedData += validDecryptedData + "|";
+      }
+    }
+  }
+  return completeDecryptedData;
+};
+
+const decryptObject = async (encryptedData) => {
   try {
     // const iv = crypto.randomBytes(16).toString("hex").slice(0, 16);
     const iv = process.env.IV;
@@ -10,14 +27,13 @@ exports.decryptObject = async (encryptedData) => {
     const decrypter = crypto.createDecipheriv("aes-256-ctr", key, iv);
 
     let decryptedData = decrypter.update(encryptedData, "hex", "utf-8");
-    // console.log("-----", decryptedData);
     return decryptedData;
   } catch (err) {
     throw Error("Error while adding decrypting object");
   }
 };
 
-exports.validateObject = async (decryptedData) => {
+const validateObject = async (decryptedData) => {
   try {
     let receivedObject = JSON.parse(decryptedData);
 

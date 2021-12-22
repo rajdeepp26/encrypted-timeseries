@@ -1,13 +1,10 @@
 const createError = require("http-errors");
-
-const { createReadStream, createWriteStream } = require("fs");
 const { PassThrough, Duplex } = require("stream");
+const fs = require("fs");
+const multiparty = require("multiparty");
 
 const listenerService = require("../services/listenerService");
-
-const fs = require("fs");
 const form = "./public/views/form.html";
-const multiparty = require("multiparty");
 
 exports.readEncryptedMessage = async (req, res, next) => {
   try {
@@ -27,10 +24,11 @@ exports.readEncryptedMessage = async (req, res, next) => {
           const encryptedDataArray = encryptedData.split("|");
           let completeDecryptedData = "";
 
-          completeDecryptedData += await getcompleteDecryptedData(
-            encryptedDataArray,
-            completeDecryptedData
-          );
+          completeDecryptedData +=
+            await listenerService.getcompleteDecryptedData(
+              encryptedDataArray,
+              completeDecryptedData
+            );
           res.end(completeDecryptedData);
         } catch (err) {
           res.statusCode = 400;
@@ -54,25 +52,4 @@ exports.sendFormToGetEncryptedMessage = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-};
-
-const getcompleteDecryptedData = async (
-  encryptedDataArray,
-  completeDecryptedData
-) => {
-  for (let i = 0; i < encryptedDataArray.length; i++) {
-    let decryptedData = "";
-    if (encryptedDataArray[i].length > 0) {
-      decryptedData += await listenerService.decryptObject(
-        encryptedDataArray[i]
-      );
-      let validDecryptedData = await listenerService.validateObject(
-        decryptedData
-      );
-      if (validDecryptedData) {
-        completeDecryptedData += validDecryptedData + "|";
-      }
-    }
-  }
-  return completeDecryptedData;
 };

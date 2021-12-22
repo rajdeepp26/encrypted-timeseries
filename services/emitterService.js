@@ -37,13 +37,10 @@ exports.addHashToObject = new Transform({
 
 exports.encryptObject = new Transform({
   transform(chunk, encoding, callback) {
-    // console.log(JSON.parse(chunk))
-    // console.log("chunk",chunk)
-
     // const iv = crypto.randomBytes(16).toString("hex").slice(0, 16);
-    const iv = process.env.IV
+    const iv = process.env.IV;
 
-    console.log("iv",iv);
+    // console.log("iv",iv);
     const message = chunk;
     const key = process.env.SECRET_KEY;
 

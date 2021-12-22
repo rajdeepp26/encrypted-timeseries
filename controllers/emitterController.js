@@ -9,8 +9,8 @@ const Throttle = require('../helper/throttle');
 exports.sendEncryptedMessage = async (req, res, next) => {
   try {
     const simplePass = new PassThrough();
-    // const TIME_INTERVAL = 10000;
-    const TIME_INTERVAL = 10;
+    const TIME_INTERVAL = 10000;
+    // const TIME_INTERVAL = 10;
     const throttle = new Throttle(TIME_INTERVAL);
 
     let total = 0;

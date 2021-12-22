@@ -1,22 +1,30 @@
-const { Transform } = require("stream");
 const crypto = require("crypto");
-const NUMBER_OF_OBJECTS = 10;
+const listenerDB = require("../db-access/listenerDB");
 
 exports.getcompleteDecryptedData = async (
   encryptedDataArray,
   completeDecryptedData
 ) => {
-  for (let i = 0; i < encryptedDataArray.length; i++) {
-    let decryptedData = "";
-    if (encryptedDataArray[i].length > 0) {
-      decryptedData += await decryptObject(encryptedDataArray[i]);
-      let validDecryptedData = await validateObject(decryptedData);
-      if (validDecryptedData) {
-        completeDecryptedData += validDecryptedData + "|";
+  try {
+    for (let i = 0; i < encryptedDataArray.length; i++) {
+      let decryptedData = "";
+      if (encryptedDataArray[i].length > 0) {
+        decryptedData += await decryptObject(encryptedDataArray[i]);
+        let validDecryptedData = await validateObject(decryptedData);
+        if (validDecryptedData) {
+          completeDecryptedData += validDecryptedData;
+        }
       }
     }
+    const dbResponse = await listenerDB.addValidObject(completeDecryptedData);
+    if (Object.keys(dbResponse).length <= 2) {
+      throw Error("Object was not saved in Db");
+    }
+    let validData = dbResponse.valid_object;
+    return validData;
+  } catch (err) {
+    throw Error("Error while getting all decrypted Data");
   }
-  return completeDecryptedData;
 };
 
 const decryptObject = async (encryptedData) => {
@@ -53,6 +61,5 @@ const validateObject = async (decryptedData) => {
     }
   } catch (err) {
     return null;
-    // throw Error("Error while validating object");
   }
 };

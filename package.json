@@ -9,6 +9,7 @@
     "start:prod": "env-cmd -f ./config/prod.env nodemon server.js"
   },
   "jest": {
+    "verbose": true,
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "jest": "^27.4.5",
+    "jest-circus": "^27.4.5",
     "nodemon": "^2.0.15",
     "supertest": "^6.1.6"
   }

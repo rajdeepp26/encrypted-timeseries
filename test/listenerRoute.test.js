@@ -1,11 +1,10 @@
-const app = require("../server");
+const app = require("../app");
 const request = require("supertest");
 
-describe("GET /api/v1/listener", () => {
-  describe("send encrypted data", () => {
-    // it
+describe("GET /api/v1/listener/get-ui", () => {
+  describe("get html form", () => {
     test("should respond with status code 200", async () => {
-      const response = await request(app).post("/api/v1/listener");
+      const response = await request(app).get("/api/v1/listener/get-ui");
       expect(response.statusCode).toEqual(200);
     });
     test("should specify text/html in content type header", async () => {
@@ -22,18 +21,3 @@ describe("GET /api/v1/listener", () => {
   });
 });
 
-// delete the test db before testing
-describe("POST /api/v1/listener", () => {
-  describe("send encrypted data", () => {
-    beforeEach(async() => {
-      console.log("before Each clear the db");
-    //   await Valid.deleteMany({})
-    });
-    // it
-    // test("should respond with status code 200", async () => {
-    //   const response = await request(app).post("/api/v1/listener").send({
-    //   });
-    //   expect(response.statusCode).toEqual(201);
-    // });
-  });
-});
